@@ -78,3 +78,55 @@ ON goal_progress_history (
     goal_id,
     recorded_at
 );
+
+CREATE TABLE habits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    category_id INTEGER,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    frequency TEXT NOT NULL CHECK (frequency IN ('daily', 'weekly', 'monthly')),
+    target_amount REAL NOT NULL CHECK (target_amount > 0),
+    unit TEXT NOT NULL DEFAULT 'units',
+    current_streak INTEGER NOT NULL DEFAULT 0 CHECK (current_streak >= 0),
+    longest_streak INTEGER NOT NULL DEFAULT 0 CHECK (longest_streak >= 0),
+    is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users (id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (category_id)
+        REFERENCES categories (id)
+        ON DELETE RESTRICT
+);
+
+CREATE INDEX habits_user_active_index
+ON habits (
+    user_id,
+    is_active
+);
+
+CREATE TABLE habit_entries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    habit_id INTEGER NOT NULL,
+    period_start DATE NOT NULL,
+    period_end DATE NOT NULL,
+    amount_completed REAL NOT NULL DEFAULT 0 CHECK (amount_completed >= 0),
+    is_completed INTEGER NOT NULL DEFAULT 0 CHECK (is_completed IN (0, 1)),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (habit_id) 
+        REFERENCES habits (id) 
+        ON DELETE CASCADE,
+    
+    UNIQUE (habit_id, period_start, period_end)
+);
+
+CREATE INDEX habit_entries_habit_period_index
+ON habit_entries (
+    habit_id,
+    period_start,
+    period_end
+);

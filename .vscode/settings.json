@@ -24,5 +24,6 @@
   "chat.agent.enabled": false,
   "github.copilot.chat.participant.alwaysInclude": [
     "github/copilot-instructions.md"
-  ]
+  ],
+  "cSpell.words": ["AUTOINCREMENT", "NOCASE", "CURRENT_TIMESTAMP"]
 }
