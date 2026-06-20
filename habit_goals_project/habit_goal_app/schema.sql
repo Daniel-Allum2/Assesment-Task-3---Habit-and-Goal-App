@@ -17,7 +17,7 @@ CREATE TABLE users (
 CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id)
@@ -43,7 +43,7 @@ CREATE TABLE goals (
     current_progress REAL NOT NULL DEFAULT 0 CHECK (current_progress >= 0),
     unit TEXT NOT NULL DEFAULT 'units',
     status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'completed')),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP,
 
     FOREIGN KEY (user_id) 
@@ -56,7 +56,7 @@ CREATE TABLE goals (
 );
 
 CREATE INDEX goals_user_status_index
-ON Goals (
+ON goals (
     user_id,
     status
 );

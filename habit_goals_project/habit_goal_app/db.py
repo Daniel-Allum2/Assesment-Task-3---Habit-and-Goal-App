@@ -4,7 +4,7 @@ from datetime import date, datetime
 import click
 from flask import current_app, g
 
-sqlite3.register_convertor(
+sqlite3.register_converter(
     "timestamp",
     lambda value: datetime.fromisoformat(
         value.decode("utf-8"),
@@ -44,10 +44,12 @@ def init_db():
 
 @click.command("init-db")
 def init_db_command():
+    """Clear existing data and recreate the database."""
     init_db()
     click.echo("Initialized the habits and goals database.")
 
 
 def init_app(app):
+    """Register the database functions with Flask."""
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
