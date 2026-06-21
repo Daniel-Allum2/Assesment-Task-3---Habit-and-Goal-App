@@ -71,3 +71,50 @@ def register():
         flash(error, "error")
 
     return render_template("auth/register.html")
+
+
+@bp.route("/login", methods=("GET", "POST"))
+def login():
+    """Authenticate a user and create a session."""
+    if g.user is not None:
+        return redirect(url_for("dashboard.index"))
+
+    if request.method == "POST":
+        username = request.form.get(
+            "username",
+            "",
+        ).strip()
+        password = request.form.get(
+            "password",
+            "",
+        )
+        db = get_db()
+
+        user = db.execute(
+            """
+            SELECT
+                id,
+                username,
+                password_hash
+            FROM users
+            WHERE username = ?
+            """,
+            (username,),
+        ).fetchone()
+
+        if user is None or not check_password_hash(
+            user["password_hash"],
+            password,
+        ):
+            flash(
+                "Incorrect username or password.",
+                "error",
+            )
+
+        else:
+            session.clear()
+            session["user_id"] = user["id"]
+
+            return redirect(url_for("dashboard.index"))
+
+    return render_template("auth/login.html")
