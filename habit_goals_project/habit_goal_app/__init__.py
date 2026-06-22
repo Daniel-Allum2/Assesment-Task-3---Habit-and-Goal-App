@@ -31,9 +31,13 @@ def create_app(test_config=None):
     from . import auth
     from . import dashboard
     from . import categories
+    from . import goals
+    from . import habits
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(dashboard.bp)
     app.register_blueprint(categories.bp)
+    app.register_blueprint(goals.bp)
+    app.register_blueprint(habits.bp)
 
     return app
