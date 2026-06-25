@@ -1,0 +1,56 @@
+{% extends "base.html" %} {% block title %} Categories | Habits and Goals {%
+endblock %} {% block content %}
+<h2>Categories</h2>
+<p>
+  Categories are created by the user and will later appear as dropdown options
+  when creating goals and habits
+</p>
+
+<p>
+  <a href="{{ url_for('categories.create') }}"> Create New Category </a>
+</p>
+
+{% if categories %}
+<table border="1" cellpadding="8">
+  <thead>
+    <tr>
+      <th>Category Name</th>
+      <th>Goals Using Category</th>
+      <th>Habits Using Category</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for category in categories %}
+    <tr>
+      <td>{{ category["name"] }}</td>
+      <td>{{ category["goal_count"] }}</td>
+      <td>{{ category["habit_count"] }}</td>
+      <td>
+        <a
+          href="{{ url_for(
+                                'categories.update',
+                                category_id=category['id']
+                            )}}"
+        >
+          Rename
+        </a>
+        <form
+          action="{{ url_for(
+                                'categories.delete',
+                                category_id=category['id']
+                            ) }}"
+          method="post"
+          style="display: inline"
+        >
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No categories have been created yet.</p>
+{% endif %} {% endblock %}
